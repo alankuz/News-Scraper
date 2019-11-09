@@ -29,7 +29,7 @@ app.use('/', express.static('public'))
 
 
 // Connect to the Mongo DB
-var MONGODB_URI = process.env.MONGODB_URI
+var MONGODB_URI = "mongodb://heroku_wsblvp52:alan1029@ds127928.mlab.com:27928/heroku_wsblvp52"
 
 mongoose.connect(MONGODB_URI);
 
