@@ -2,7 +2,7 @@ News-Scraper
 
 ### DEMO 
 
-* [Click here for the demo](https://enigmatic-taiga-02028.herokuapp.com/)
+* [Click here for the demo](https://nameless-beyond-21542.herokuapp.com/)
 This project displays skills in node.js, express.js, mongoDB, mongoose, and scraping. This project displays Reddit's homepage, you made save certain links, or add notes to the links you save. 
 ## Getting Started
 
