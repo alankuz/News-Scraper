@@ -1,0 +1,55 @@
+body {
+  background-color: rgb(168, 167, 167);
+}
+button {
+    margin-right:1%;
+}
+a.btn.btn-danger{
+    margin-right:10px;
+    color:white;
+}
+#articlecontain {
+    border:blue solid 2px;
+    padding:5px;
+    margin-bottom: 1%;
+}
+#maincontain {
+  width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 5%;
+}
+#maincontain p {
+    color:white;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+#savedarticles {
+  display: inline-block;
+  overflow: auto;
+  width: 60%;
+  height: 700px;
+}
+#articles {
+  display: inline-block;
+  overflow: auto;
+  width: 100%;
+}
+#notes {
+  float: right;
+  width: 30%;
+}
+textarea,
+input {
+  display: block;
+  width: 100%;
+  background-color: #f19548;
+  color:white;
+}
+input {
+  height: 36px;
+  font-size: 24px;
+}
+textarea {
+  height: 200px;
+  font-size: 18px;
+}

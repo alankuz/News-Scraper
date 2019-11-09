@@ -1,6 +1,7 @@
 var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var mongojs = require("mongojs");
 
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
@@ -10,7 +11,6 @@ var cheerio = require("cheerio");
 
 // Require all models
 var db = require("./models");
-
 var PORT = 3000;
 
 // Initialize Express
@@ -25,6 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
+app.use('/', express.static('public'))
+
 
 // Connect to the Mongo DB
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
@@ -69,9 +71,6 @@ app.get("/scrape", function(req, res) {
   });
 });
 
-app.get("/saved", function(req,res) {
-  res.sendFile('/saved.html');
-})
 // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
   // Grab every document in the Articles collection
@@ -121,6 +120,101 @@ app.post("/articles/:id", function(req, res) {
       res.json(err);
     });
 });
+app.get("/clear", function(req, res) {
+  db.Article.remove({}, function(error, response) {
+    // Log any errors to the console
+    if (error) {
+      console.log(error);
+      res.send(error);
+    }
+    else {
+      // Otherwise, send the mongojs response to the browser
+      // This will fire off the success function of the ajax request
+      console.log(response);
+      res.send(response);
+    }
+  });
+})
+app.get("/clearnote:/id", function(req, res) {
+  db.Note.remove({ _id: mongojs.ObjectId(req.params.id)
+  }, function(error, response) {
+    // Log any errors to the console
+    if (error) {
+      console.log(error);
+      res.send(error);
+    }
+    else {
+      // Otherwise, send the mongojs response to the browser
+      // This will fire off the success function of the ajax request
+      console.log(response);
+      res.send(response);
+    }
+  });
+})
+app.post("/save/:id", function(req, res) {
+  // When searching by an id, the id needs to be passed in
+  // as (mongojs.ObjectId(IdYouWantToFind))
+
+  // Update the note that matches the object id
+  db.Article.update(
+    {
+      _id: mongojs.ObjectId(req.params.id)
+    },
+    {
+      // Set the title, note and modified parameters
+      // sent in the req body.
+      $set: {
+       saved:true
+      }
+    },
+    function(error, edited) {
+      // Log any errors from mongojs
+      if (error) {
+        console.log(error);
+        res.send(error);
+      }
+      else {
+        // Otherwise, send the mongojs response to the browser
+        // This will fire off the success function of the ajax request
+        console.log(edited);
+        res.send(edited);
+      }
+    }
+  );
+});
+app.post("/unsave/:id", function(req, res) {
+  // When searching by an id, the id needs to be passed in
+  // as (mongojs.ObjectId(IdYouWantToFind))
+
+  // Update the note that matches the object id
+  db.Article.update(
+    {
+      _id: mongojs.ObjectId(req.params.id)
+    },
+    {
+      // Set the title, note and modified parameters
+      // sent in the req body.
+      $set: {
+       saved:false
+      }
+    },
+    function(error, edited) {
+      // Log any errors from mongojs
+      if (error) {
+        console.log(error);
+        res.send(error);
+      }
+      else {
+        // Otherwise, send the mongojs response to the browser
+        // This will fire off the success function of the ajax request
+        console.log(edited);
+        res.send(edited);
+      }
+    }
+  );
+});
+
+
 
 // Start the server
 app.listen(PORT, function() {
