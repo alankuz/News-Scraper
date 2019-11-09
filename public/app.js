@@ -5,9 +5,9 @@ $.getJSON("/articles", function(data) {
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
     if(data[i].saved === false){
-    $("#articles").append("<div id='articlecontain'><p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + '</p> <button class="btn btn-danger save" id="'+data[i]._id+'">Save</button></div>');
+    $("#articles").append("<div id='articlecontain'><p data-id='" + data[i]._id + "'>" + data[i].title + '<br /><a href="' + data[i].link + '">'+data[i].link+'</a></p> <button class="btn btn-danger save" id="'+data[i]._id+'">Save</button></div>');
     }else if(data[i].saved === true){
-      $("#savedarticles").append("<div id='articlecontain'><p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + '</p> <button class="btn btn-danger unsave" id="'+data[i]._id+'">Unsave</button>'+'<button class="btn btn-danger notes" id="'+data[i]._id+'">Notes</button></div>');
+      $("#savedarticles").append("<div id='articlecontain'><p data-id='" + data[i]._id + "'>" + data[i].title + '<br /><a href="' + data[i].link + '">'+data[i].link+'</a></p> <button class="btn btn-danger unsave" id="'+data[i]._id+'">Unsave</button>'+'<button class="btn btn-danger notes" id="'+data[i]._id+'">Notes</button></div>');
 
     }
   }
