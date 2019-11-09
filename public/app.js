@@ -1,23 +1,23 @@
 // Grab the articles as a json
-function starter(){
-$.getJSON("/articles", function(data) {
-  // For each one
-  for (var i = 0; i < data.length; i++) {
-    // Display the apropos information on the page
-    if(data[i].saved === false){
-    $("#articles").append("<div id='articlecontain'><p data-id='" + data[i]._id + "'>" + data[i].title + '<br /><a href="' + data[i].link + '">'+data[i].link+'</a></p> <button class="btn btn-danger save" id="'+data[i]._id+'">Save</button></div>');
-    }else if(data[i].saved === true){
-      $("#savedarticles").append("<div id='articlecontain'><p data-id='" + data[i]._id + "'>" + data[i].title + '<br /><a href="' + data[i].link + '">'+data[i].link+'</a></p> <button class="btn btn-danger unsave" id="'+data[i]._id+'">Unsave</button>'+'<button class="btn btn-danger notes" id="'+data[i]._id+'">Notes</button></div>');
+function starter() {
+  $.getJSON("/articles", function (data) {
+    // For each one
+    for (var i = 0; i < data.length; i++) {
+      // Display the apropos information on the page
+      if (data[i].saved === false) {
+        $("#articles").append("<div id='articlecontain'><p data-id='" + data[i]._id + "'>" + data[i].title + '<br /><a href="' + data[i].link + '">' + data[i].link + '</a></p> <button class="btn btn-danger save" id="' + data[i]._id + '">Save</button></div>');
+      } else if (data[i].saved === true) {
+        $("#savedarticles").append("<div id='articlecontain'><p data-id='" + data[i]._id + "'>" + data[i].title + '<br /><a href="' + data[i].link + '">' + data[i].link + '</a></p> <button class="btn btn-danger unsave" id="' + data[i]._id + '">Unsave</button>' + '<button class="btn btn-danger notes" id="' + data[i]._id + '">Notes</button></div>');
 
+      }
     }
-  }
-});}
+  });
+}
 
-// Whenever someone clicks a p tag
-$(document).on("click", ".notes", function() {
+//Open the notes menu
+$(document).on("click", ".notes", function () {
   // Empty the notes from the note section
   $("#notes").empty();
-  // Save the id from the p tag
   var thisId = $(this).attr("id");
 
   // Now make an ajax call for the Article
@@ -26,7 +26,7 @@ $(document).on("click", ".notes", function() {
     url: "/articles/" + thisId
   })
     // With that done, add the note information to the page
-    .then(function(data) {
+    .then(function (data) {
       console.log(data);
       // The title of the article
       $("#notes").append("<h2>" + data.title + "</h2>");
@@ -49,7 +49,7 @@ $(document).on("click", ".notes", function() {
 });
 
 // When you click the savenote button
-$(document).on("click", "#savenote", function() {
+$(document).on("click", "#savenote", function () {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
 
@@ -65,7 +65,7 @@ $(document).on("click", "#savenote", function() {
     }
   })
     // With that done
-    .then(function(data) {
+    .then(function (data) {
       // Log the response
       console.log(data);
       // Empty the notes section
@@ -76,17 +76,26 @@ $(document).on("click", "#savenote", function() {
   $("#titleinput").val("");
   $("#bodyinput").val("");
 });
-$(document).on("click", "#clearnote", function() {
+
+// Clears the note
+
+$(document).on("click", "#clearnote", function () {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
 
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
     method: "GET",
-    url: "/clearnote/" + thisId
+    url: "/clearnote/" + thisId,
+    data: {
+      // Value taken from title input
+      title: "",
+      // Value taken from note textarea
+      body: ""
+    }
   })
     // With that done
-    .then(function(data) {
+    .then(function (data) {
       // Log the response
       console.log(data);
       // Empty the notes section
@@ -97,7 +106,7 @@ $(document).on("click", "#clearnote", function() {
   $("#titleinput").val("");
   $("#bodyinput").val("");
 });
-$(document).on("click", ".scrape-new", function() {
+$(document).on("click", ".scrape-new", function () {
   // Grab the id associated with the article from the submit button
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
@@ -105,7 +114,7 @@ $(document).on("click", ".scrape-new", function() {
     url: "/scrape"
   })
     // With that done
-    .then(function(data) {
+    .then(function (data) {
       // Log the response
       starter()
       // Empty the notes section
@@ -113,19 +122,19 @@ $(document).on("click", ".scrape-new", function() {
 
   // Also, remove the values entered in the input and textarea for note entry
 });
-$(".clear").on("click", function() {
+$(".clear").on("click", function () {
   // Make an AJAX GET request to delete the notes from the db
   $.ajax({
     type: "GET",
     dataType: "json",
     url: "/clear",
     // On a successful call, clear the #results section
-    success: function(response) {
+    success: function (response) {
       $("#articles").empty();
     }
   });
 });
-$(document).on("click", ".save", function() {
+$(document).on("click", ".save", function () {
   var thisId = $(this).attr("id");
 
   $.ajax({
@@ -133,7 +142,7 @@ $(document).on("click", ".save", function() {
     url: "/save/" + thisId
   })
     // With that done
-    .then(function(data) {
+    .then(function (data) {
       $("#articles").empty();
       starter()
       // Log the response
@@ -141,7 +150,7 @@ $(document).on("click", ".save", function() {
       // Empty the notes section
     });
 })
-$(document).on("click", ".unsave", function() {
+$(document).on("click", ".unsave", function () {
   var thisId = $(this).attr("id");
 
   $.ajax({
@@ -149,7 +158,7 @@ $(document).on("click", ".unsave", function() {
     url: "/unsave/" + thisId
   })
     // With that done
-    .then(function(data) {
+    .then(function (data) {
       $("#savedarticles").empty();
       starter()
       // Log the response

@@ -52,9 +52,13 @@ app.get("/scrape", function (req, res) {
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
+      var linkTemp =$(element).children().attr("href")
       result.title = $(element)
         .text()
-      result.link = $(element).children().attr("href");
+        if(linkTemp.charAt(1) === "r"){
+          result.link = "https://old.reddit.com" + linkTemp;
+        }else{
+      result.link = $(element).children().attr("href");}
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function (dbArticle) {
@@ -137,22 +141,22 @@ app.get("/clear", function (req, res) {
   });
 })
 app.get("/clearnote:/id", function (req, res) {
-  db.Note.remove({
-    _id: mongojs.ObjectId(req.params.id)
-  }, function (error, response) {
-    // Log any errors to the console
-    if (error) {
-      console.log(error);
-      res.send(error);
-    }
-    else {
-      // Otherwise, send the mongojs response to the browser
-      // This will fire off the success function of the ajax request
-      console.log(response);
-      res.send(response);
-    }
+  db.Note.create(req.body)
+  .then(function (dbNote) {
+    // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
+    // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
+    // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+    return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+  })
+  .then(function (dbArticle) {
+    // If we were able to successfully update an Article, send it back to the client
+    res.json(dbArticle);
+  })
+  .catch(function (err) {
+    // If an error occurred, send it to the client
+    res.json(err);
   });
-})
+});
 app.post("/save/:id", function (req, res) {
   // When searching by an id, the id needs to be passed in
   // as (mongojs.ObjectId(IdYouWantToFind))
